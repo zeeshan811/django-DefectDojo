@@ -99,7 +99,7 @@ def do_clean(value):
 def get_clean_base64(value):
     if value is None:
         return ""
-    return base64.b64decode(value).decode()
+    return base64.b64decode(value).decode("utf-8","replace")
 
 
 def do_clean_cwe(value):
@@ -128,7 +128,10 @@ def get_item(item_node, test):
     unsaved_req_resp = list()
     for request_response in item_node.findall('./requestresponse'):
         request = get_clean_base64(request_response.findall('request')[0].text)
-        response = get_clean_base64(request_response.findall('response')[0].text)
+        if request_response.findall('response'):
+            response = get_clean_base64(request_response.findall('response')[0].text)
+        else:
+            response = ""
         unsaved_req_resp.append({"req": request, "resp": response})
 
     collab_text = ""
